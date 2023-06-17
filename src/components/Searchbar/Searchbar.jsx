@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { GoSearch } from 'react-icons/go';
 import {
@@ -9,47 +9,41 @@ import {
   SearchFormInput,
 } from './Searchbar.styled';
 
-export class Searchbar extends Component {
-  state = {
-    query: '',
+export const Searchbar = ({ onSubmit }) => {
+  const [query, setQuery] = useState('');
+
+  const handleInputChange = e => {
+    setQuery(e.target.value);
   };
 
-  handleInputChange = e => {
-    this.setState({ query: e.target.value });
-  };
-
-  handleSearchSubmit = e => {
+  const handleSearchSubmit = e => {
     e.preventDefault();
-    if (!this.state.query.trim()) {
+    if (!query.trim()) {
       return;
     }
-    this.props.onSubmit(this.state.query);
+    onSubmit(query);
   };
 
-  render() {
-    const { query } = this.state;
+  return (
+    <SearchBarHeader>
+      <SearchForm onSubmit={handleSearchSubmit}>
+        <SearchFormBtn type="submit">
+          <GoSearch size="20" />
+          <SearchFormBtnLabel>Search</SearchFormBtnLabel>
+        </SearchFormBtn>
 
-    return (
-      <SearchBarHeader>
-        <SearchForm onSubmit={this.handleSearchSubmit}>
-          <SearchFormBtn type="submit">
-            <GoSearch size="20" />
-            <SearchFormBtnLabel>Search</SearchFormBtnLabel>
-          </SearchFormBtn>
-
-          <SearchFormInput
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            value={query}
-            onChange={this.handleInputChange}
-          />
-        </SearchForm>
-      </SearchBarHeader>
-    );
-  }
-}
+        <SearchFormInput
+          type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          value={query}
+          onChange={handleInputChange}
+        />
+      </SearchForm>
+    </SearchBarHeader>
+  );
+};
 
 Searchbar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
